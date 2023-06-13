@@ -1,32 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   gnl_main.c                                         :+:      :+:    :+:   */
+/*   gnl_main2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pbureera <pbureera@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/14 16:57:48 by pbureera          #+#    #+#             */
-/*   Updated: 2022/07/14 17:02:52 by pbureera         ###   ########.fr       */
+/*   Created: 2022/10/14 13:06:50 by pbureera          #+#    #+#             */
+/*   Updated: 2022/10/14 13:06:51 by pbureera         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <fcntl.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-int	main(void)
+
+int main(int ac, char **argv)
 {
-	int		fd;
-	char	*line;
+	int fd[2];
+	char *line;
+	(void)ac;
+	int	i;
 
-	fd = open("tests/1.txt", O_RDONLY);
-	while (1)
+	fd[0] = open(argv[1], O_RDONLY);
+	fd[1] = open(argv[2], O_RDONLY);
+	i = 0;
+
+	line = get_next_line(fd[i]);
+	while (line && (i == 0 || i == 1))
 	{
-		line = get_next_line(fd);
+		if (i == 0)
+			i = 1;
+		else
+			i = 0;
 		printf("%s", line);
-		if (line == NULL)
-			break ;
 		free(line);
+		line = get_next_line(fd[i]);
 	}
 	return (0);
 }
